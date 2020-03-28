@@ -4,7 +4,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
 
-  // Init the Express application
+  // Init the Express applicationx
   const app = express();
 
   // Set the network port
@@ -36,8 +36,17 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       return;
     }
 
-    res.send("test url " + image_url);
+    let filteredImage = await filterImageFromURL(image_url);
+    res.send(filteredImage);
+    
+    //Send actual file as response.
+    //res.sendfile(filteredImage);
 
+    let localFiles = Array<string>();
+    localFiles.push(filteredImage);
+
+    //Clear local file
+    await deleteLocalFiles(localFiles);
   });
 
   /**************************************************************************** */
