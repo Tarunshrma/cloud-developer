@@ -10,6 +10,9 @@ First make sure local monolithic application is working correcrtly. - Done
     a) feed microservice : port 8080
     b) user-microservice : port 8080 
     c)image-procss-microserrvice :  port 8080
+Create Docker images for each microsoverice
+    a) Cleanup previous images from local machine
+    b) cleanup previous images from docker hub
 
 
     
