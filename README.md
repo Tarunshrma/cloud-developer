@@ -26,8 +26,10 @@ Push Images to Doccker-Hub
     Push Image for Feed - Done
     Push Image for Frontend - Done    
 Create ReverseProxy Config
-        Create image for ReverseProxy
-        Push image for ReverseProxy
+        Create image for ReverseProxy - Done 
+        Push image for ReverseProxy - Done
+Create Docker-Compose files
+    Run the containers using docker compose.
     
     
     
