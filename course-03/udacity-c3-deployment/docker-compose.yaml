@@ -1,0 +1,45 @@
+version: "3"
+services:
+  reverseproxy:
+      image: tarunshrma/reverseproxy
+      ports:
+          - 8080:8080
+      restart: always
+      depends_on:
+        - backend-user
+        - backend-feed
+        - backend_image_filter     
+  backend-user:
+    image: tarunshrma/udacity-restapi-user
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME} 
+      POSTGRESS_HOST: ${POSTGRESS_HOST} 
+      AWS_REGION: ${AWS_REGION} 
+      AWS_PROFILE: ${AWS_PROFILE} 
+      AWS_BUCKET: ${AWS_BUCKET}
+      JWT_SIGNED_TOKEN: ${JWT_SIGNED_TOKEN}
+      URL: "http://localhost:8100"
+  backend-feed:
+    image: tarunshrma/udacity-restapi-feed
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME} 
+      POSTGRESS_HOST: ${POSTGRESS_HOST} 
+      AWS_REGION: ${AWS_REGION} 
+      AWS_PROFILE: ${AWS_PROFILE} 
+      AWS_BUCKET: ${AWS_BUCKET}
+      JWT_SIGNED_TOKEN: ${JWT_SIGNED_TOKEN}
+      URL: "http://localhost:8100"
+  backend_image_filter:
+    image: tarunshrma/udacity-restapi-filter-image
+  frontend:
+    image: tarunshrma/udacity-frontend
+    ports:
+      - "8100:80"
