@@ -6,17 +6,17 @@ services:
     image: tarunshrma/reverseproxy 
   backend_user:
     build:
-      context: ../../udacity-c3-restapi-user
+      context: ./../udacity-c3-restapi-user
     image: tarunshrma/udacity-restapi-user
   backend_feed:
     build:
-      context: ../../udacity-c3-restapi-feed  
+      context: ./../udacity-c3-restapi-feed  
     image: tarunshrma/udacity-restapi-feed
   backend_image_filter:
     build:
-      context: ../../udacity-c3-restapi-filter-image  
+      context: ./../udacity-c3-restapi-filter-image  
     image: tarunshrma/udacity-restapi-filter-image
   frontend:
     build:
-      context: ../../udacity-c3-frontend  
+      context: ./../udacity-c2-frontend  
     image: tarunshrma/udacity-frontend
