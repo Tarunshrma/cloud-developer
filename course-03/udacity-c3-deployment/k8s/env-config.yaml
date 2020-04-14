@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  AWS_BUCKET: udagram-tarunshrma-dev
+  AWS_PROFILE: default
+  AWS_REGION: ap-south-1
+  JWT_SIGNED_TOKEN: mykey
+  POSTGRES_DB_NAME: udagramtarundev
+  POSTGRESS_HOST: udagramtarundev.ciaollwvrgng.ap-south-1.rds.amazonaws.com
+  URL: http://localhost:8100  
+metadata:
+  name: env-config

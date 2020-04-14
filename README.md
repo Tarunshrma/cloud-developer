@@ -30,6 +30,19 @@ Create ReverseProxy Config
         Push image for ReverseProxy - Done
 Create Docker-Compose files
     Run the containers using docker compose.
+
+Create Deployments
+    Deployment for backend-feed sservice
+    Deployment for backend-user sservice
+    Deployment for backend-filter-image sservice
+    Deployment for frontend sservice
+    Deployment for reverseproxy service
+Create Services
+    Services for backend-feed sservice
+    Services for backend-user sservice
+    Services for backend-filter-image sservice
+    Services for frontend sservice
+    Services for reverseproxy service
     
     
     
