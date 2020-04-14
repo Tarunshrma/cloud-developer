@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: backend-user
+  name: backend-user
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        service: backend-user
+    spec:
+      containers:
+      - image: tarunshrma/udacity-restapi-user
+        name: backend-user 
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"      
+        env:
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: URL 
+        - name: JWT_SIGNED_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: JWT_SIGNED_TOKEN
+        - name: POSTGRES_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_DB_NAME
+        - name: POSTGRESS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRESS_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: POSTGRES_USERNAME
+      restartPolicy: Always
