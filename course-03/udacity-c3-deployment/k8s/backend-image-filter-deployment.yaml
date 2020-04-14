@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: backend-image-filter
+  name: backend-image-filter
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        service: backend-image-filter
+    spec:
+      containers:
+      - image: tarunshrma/udacity-restapi-filter-image
+        name: backend-image-filter
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"                  
+      restartPolicy: Always
