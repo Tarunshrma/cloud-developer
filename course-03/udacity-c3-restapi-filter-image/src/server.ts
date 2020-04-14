@@ -37,7 +37,7 @@ import { IndexRouter } from './controllers/v0/index.router';
     res.send( "/api/v0/" );
   } );
   
-  app.use('/api/v0/', IndexRouter)
+  // app.use('/api/v0/', IndexRouter)
 
   // Start the Server
   app.listen( port, () => {

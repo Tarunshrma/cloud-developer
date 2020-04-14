@@ -12,7 +12,7 @@ spec:
         service: reverseproxy
     spec:
       containers:
-      - image: tarunshrma/reverseproxy:1.0.2
+      - image: tarunshrma/reverseproxy:1.0.4
         name: reverseproxy
         imagePullPolicy: Always          
         resources:
