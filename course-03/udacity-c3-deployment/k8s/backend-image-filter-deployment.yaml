@@ -12,7 +12,7 @@ spec:
         service: backend-image-filter
     spec:
       containers:
-      - image: tarunshrma/udacity-restapi-filter-image
+      - image: tarunshrma/udacity-restapi-filter-image:1.0.3
         name: backend-image-filter
         imagePullPolicy: Always  
         resources:
