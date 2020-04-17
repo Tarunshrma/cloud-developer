@@ -35,3 +35,7 @@ UserInterfaceState.xcuserstate
 node_modules
 venv/
 .vscode
+.env
+aws-secret.yaml
+env-config.yaml
+env-secret.yaml
