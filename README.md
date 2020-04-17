@@ -130,6 +130,9 @@ Apply all other yaml files:
 
 ![PodsStatus](https://github.com/Tarunshrma/cloud-developer/blob/develop-microservice-project-03/course-03/Screenshots/Kubernetes%20Cluster.png) 
 
+### Running Application on AWS EKS
+![Udagram](https://github.com/Tarunshrma/cloud-developer/blob/develop-microservice-project-03/course-03/Screenshots/Application-Screenshot.png)
+
 ### CI/CD with TravisCL
 - Sign up for [TravisCL](https://travis-ci.com) and connect your Github application repository to TrivisCL.
 - Add `.travis.yml` file to the root of the application.
