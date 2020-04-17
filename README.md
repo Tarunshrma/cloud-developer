@@ -133,6 +133,12 @@ Apply all other yaml files:
 ### Running Application on AWS EKS
 ![Udagram](https://github.com/Tarunshrma/cloud-developer/blob/develop-microservice-project-03/course-03/Screenshots/Application-Screenshot.png)
 
+### Autoscale App
+![AutoscaleInProgress](https://github.com/Tarunshrma/cloud-developer/blob/master/course-03/Screenshots/Autoscaling-InProgress.png)
+
+![AutoscaleComplete](https://github.com/Tarunshrma/cloud-developer/blob/master/course-03/Screenshots/Autoscaling-Complete.png)
+
+
 ### CI/CD with TravisCL
 - Sign up for [TravisCL](https://travis-ci.com) and connect your Github application repository to TrivisCL.
 - Add `.travis.yml` file to the root of the application.
