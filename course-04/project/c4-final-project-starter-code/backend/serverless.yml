@@ -11,7 +11,7 @@ provider:
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-south-1'}
-  dbVersion: '1.0'
+  dbVersion: '1.2'
 
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -23,6 +23,7 @@ provider:
       Action:
         - dynamodb:Scan
         - dynamodb:PutItem
+        - dynamodb:DeleteItem
         - dynamodb:Query
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
     - Effect: Allow
@@ -62,6 +63,14 @@ functions:
             schema:
               application/json: ${file(requestValidators/create-todo-validator.json)}
 
+  DeleteTodo:
+    handler: src/lambda/http/deleteTodo.handler
+    events:
+      - http:
+          method: delete
+          path: todos/{todoId}
+          cors: true
+
   # # TODO: Configure this function
   # UpdateTodo:
   #   handler: src/lambda/http/updateTodo.handler
@@ -94,21 +103,17 @@ resources:
         TableName: ${self:provider.environment.TODO_TABLE}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: createdAt
-            AttributeType: S
           - AttributeName: todoId
             AttributeType: S
-        KeySchema:
           - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: todoId
             KeyType: HASH
-          - AttributeName: createdAt
-            KeyType: RANGE
         GlobalSecondaryIndexes:
         - IndexName: ${self:provider.environment.INDEX_NAME}
           KeySchema:
-            - AttributeName: todoId
+            - AttributeName: userId
               KeyType: HASH
           Projection:
             ProjectionType: ALL
