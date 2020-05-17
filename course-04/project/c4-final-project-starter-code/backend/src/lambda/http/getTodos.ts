@@ -4,13 +4,12 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import * as AWS  from 'aws-sdk'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
-
 const todoTable = process.env.TODO_TABLE
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // TODO: Get all TODO items for a current user
   console.log('Processing event: ', event)
-  const userId = '1'
+  const userId = '5'
 
   const params = {
     TableName: todoTable,
@@ -29,7 +28,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify(
-            result.Items[0]
+            result
         )
       }
   }  
