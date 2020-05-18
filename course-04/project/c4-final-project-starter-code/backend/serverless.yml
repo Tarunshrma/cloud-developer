@@ -17,6 +17,8 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     TODO_TABLE: tblTodos-${self:provider.stage}-${self:provider.dbVersion}
     INDEX_NAME: tblTodo-Index-${self:provider.stage}
+    TODO_ATTACHMENT_S3_BUCKET: todo-attachment-${self:provider.stage}
+    SIGNED_URL_EXPIRATION: 300
 
   iamRoleStatements:
     - Effect: Allow
@@ -27,11 +29,17 @@ provider:
         - dynamodb:Query
         - dynamodb:UpdateItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+
     - Effect: Allow
       Action:
         - dynamodb:Query
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}/index/${self:provider.environment.INDEX_NAME}
-  
+
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: arn:aws:s3:::${self:provider.environment.TODO_ATTACHMENT_S3_BUCKET}/*
 
 functions:
 
@@ -84,13 +92,12 @@ functions:
             schema:
               application/json: ${file(requestValidators/update-todo-validator.json)}
 
-  # # TODO: Configure this function
-  # GenerateUploadUrl:
-  #   handler: src/lambda/http/generateUploadUrl.handler
-  #   events:
-  #     - http:
-  #         method: post
-  #         path: todos/{todoId}/attachment
+  GenerateUploadUrl:
+    handler: src/lambda/http/generateUploadUrl.handler
+    events:
+      - http:
+          method: post
+          path: todos/{todoId}/attachment
 
 resources:
   Resources:
@@ -114,6 +121,12 @@ resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+
+    TodoAttachmentBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.TODO_ATTACHMENT_S3_BUCKET}
+
 
 
 
