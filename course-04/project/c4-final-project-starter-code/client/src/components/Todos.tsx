@@ -51,10 +51,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         name: this.state.newTodoName,
         dueDate
       })
+
       this.setState({
         todos: [...this.state.todos, newTodo],
         newTodoName: ''
       })
+
     } catch {
       alert('Todo creation failed')
     }
@@ -159,6 +161,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   }
 
   renderTodosList() {
+
     return (
       <Grid padded>
         {this.state.todos.map((todo, pos) => {

@@ -102,6 +102,7 @@ functions:
           method: post
           path: todos/{todoId}/attachment
           authorizer: Auth
+          cors: true
 
 resources:
   Resources:
@@ -130,6 +131,16 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.TODO_ATTACHMENT_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - GET
+                - POST
+                - PUT
+              AllowedOrigins:
+                - "*"
 
 
 
