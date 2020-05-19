@@ -2,9 +2,7 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWS  from 'aws-sdk'
-
-const docClient = new AWS.DynamoDB.DocumentClient()
-const todoTable = process.env.TODO_TABLE
+import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
 
 const s3 = new AWS.S3({
     signatureVersion: 'v4'
@@ -13,6 +11,7 @@ const s3 = new AWS.S3({
 const bucketName = process.env.TODO_ATTACHMENT_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
+const dataAccessLayer = new DynamoDBDataAcccessLayer()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
@@ -23,41 +22,33 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     Expires: urlExpiration
   })
 
-
-  console.log("Todo id is ", todoId)
-  await updateTodoItem(todoId);
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
-    body: JSON.stringify({
-        uploadUrl: uploadUrl
-    })
-  }
-
-}
-
-async function updateTodoItem(todoId: string){
-  
   const imageUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
 
-  console.log("Uplooad url is ", imageUrl)
+  try{
 
-  var params = {
-    TableName:todoTable,
-    Key:{
-        "todoId": todoId,
-    },
-    UpdateExpression: "set #attachment = :n",
-    ExpressionAttributeValues:{
-        ":n":imageUrl,
-    },
-    ExpressionAttributeNames:{
-        "#attachment": "attachmentUrl"
+    await dataAccessLayer.updateTodoItemWithAttachmentUrl(todoId,imageUrl);
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+          uploadUrl: uploadUrl
+      })
     }
-}
 
-await docClient.update(params).promise();
+  }catch(Error){
+
+    return {
+      statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: "Error in updating attachment url"
+    }
+
+  }
+
+
 }
