@@ -3,8 +3,10 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import {parseUserId} from '../../auth/utils'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
+import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
 
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
+const apiResponseHelper = new ApiResponseHelper();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     console.log('Processing event: ', event)
@@ -13,16 +15,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const userId = parseUserId(token);
 
     const items = await dataAccessLayer.getTodoItemsFromUserId(userId)
-
-    return {
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify(
-          items
-        )
-      }
+    return apiResponseHelper.generateDataSuccessResponse(200,items)
+    // return {
+    //     statusCode: 200,
+    //     headers: {
+    //       'Access-Control-Allow-Origin': '*'
+    //     },
+    //     body: JSON.stringify(
+    //       items
+    //     )
+    //   }
 }
 
 function getToken(authHeader: string): string {

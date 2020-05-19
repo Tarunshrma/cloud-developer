@@ -12,7 +12,6 @@ const s3 = new AWS.S3({
 const bucketName = process.env.TODO_ATTACHMENT_S3_BUCKET
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
 
-
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
 

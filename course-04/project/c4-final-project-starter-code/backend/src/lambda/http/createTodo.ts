@@ -6,9 +6,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import {parseUserId} from '../../auth/utils'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
+import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
 
 const logger = createLogger('createTodo')
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
+const apiResponseHelper = new ApiResponseHelper();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event', event)
@@ -23,15 +25,17 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const todoItem = await dataAccessLayer.createTodoItems(newTodo,userId)
 
-    return {
-      statusCode: 201,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({
-          newPost: todoItem
-      })
-    }
+    return apiResponseHelper.generateDataSuccessResponse(201,todoItem);
+
+    // return {
+    //   statusCode: 201,
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    //   },
+    //   body: JSON.stringify({
+    //       newPost: todoItem
+    //   })
+    // }
    
 }
 
