@@ -4,6 +4,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 
 import * as AWS  from 'aws-sdk'
 
+const s3 = new AWS.S3({
+  signatureVersion: 'v4'
+})
+
+const bucketName = process.env.TODO_ATTACHMENT_S3_BUCKET
 const docClient = new AWS.DynamoDB.DocumentClient()
 const todoTable = process.env.TODO_TABLE
 
@@ -22,6 +27,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     await docClient.delete(params).promise();
 
+    deleteAttachmentImage(todoId);
+
     return {
         statusCode: 200,
         headers: {
@@ -29,4 +36,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         },
         body: null
       }
+}
+
+function deleteAttachmentImage(todoId: string){
+  s3.deleteObject({
+    Bucket: bucketName,
+    Key: todoId
+  })
+  
 }

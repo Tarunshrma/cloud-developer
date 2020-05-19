@@ -3,6 +3,9 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWS  from 'aws-sdk'
 
+const docClient = new AWS.DynamoDB.DocumentClient()
+const todoTable = process.env.TODO_TABLE
+
 const s3 = new AWS.S3({
     signatureVersion: 'v4'
   })
@@ -20,6 +23,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     Expires: urlExpiration
   })
 
+
+  console.log("Todo id is ", todoId)
+  await updateTodoItem(todoId);
+
   return {
     statusCode: 200,
     headers: {
@@ -30,4 +37,27 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     })
   }
 
+}
+
+async function updateTodoItem(todoId: string){
+  
+  const imageUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+
+  console.log("Uplooad url is ", imageUrl)
+
+  var params = {
+    TableName:todoTable,
+    Key:{
+        "todoId": todoId,
+    },
+    UpdateExpression: "set #attachment = :n",
+    ExpressionAttributeValues:{
+        ":n":imageUrl,
+    },
+    ExpressionAttributeNames:{
+        "#attachment": "attachmentUrl"
+    }
+}
+
+await docClient.update(params).promise();
 }
