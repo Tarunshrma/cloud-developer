@@ -91,7 +91,8 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      var todos = await getTodos(this.props.auth.getIdToken())
+        
       this.setState({
         todos,
         loadingTodos: false
@@ -144,6 +145,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     }
 
     return this.renderTodosList()
+   
   }
 
   renderLoading() {

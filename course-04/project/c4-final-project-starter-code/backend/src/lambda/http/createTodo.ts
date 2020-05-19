@@ -7,6 +7,7 @@ import * as AWS  from 'aws-sdk'
 
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { TodoItem } from '../../models/TodoItem'
+import {parseUserId} from '../../auth/utils'
 
 const logger = createLogger('createTodo')
 const docClient = new AWS.DynamoDB.DocumentClient()
@@ -27,7 +28,13 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   const todoItem  = new TodoItem();
 
-  todoItem.userId = '5'
+  const authHeader = event.headers['Authorization']
+  const token = getToken(authHeader)
+  const userId = parseUserId(token);
+
+  logger.info(`create group for user ${userId} with data ${newTodo}`)
+
+  todoItem.userId = userId
   todoItem.done = false
   todoItem.todoId = todoId
   todoItem.createdAt = currentTimeStamp 
@@ -48,4 +55,17 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           newPost: todoItem
       })
     }
+   
+}
+
+function getToken(authHeader: string): string {
+  if (!authHeader) throw new Error('No authentication header')
+
+  if (!authHeader.toLowerCase().startsWith('bearer '))
+    throw new Error('Invalid authentication header')
+
+  const split = authHeader.split(' ')
+  const token = split[1]
+
+  return token
 }
