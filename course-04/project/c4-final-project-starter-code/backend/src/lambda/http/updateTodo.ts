@@ -17,7 +17,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   try{
 
     await dataAccessLayer.updateTodoItem(updatedTodo,todoId);
-
     return apiResponseHelper.generateEmptySuccessResponse(204);
 
   }catch(Error){
