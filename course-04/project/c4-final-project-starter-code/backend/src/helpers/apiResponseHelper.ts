@@ -2,14 +2,14 @@ import {  APIGatewayProxyResult } from 'aws-lambda'
 
 export class ApiResponseHelper{
 
-    generateDataSuccessResponse(statusCode: number, items: any): APIGatewayProxyResult{
+    generateDataSuccessResponse(statusCode: number,key: string, items: any): APIGatewayProxyResult{
         return {
             statusCode: statusCode,
             headers:{
               'Access-Control-Allow-Origin':'*'
             },
             body: JSON.stringify({
-              items
+                [key]: items
             })
           }
     }

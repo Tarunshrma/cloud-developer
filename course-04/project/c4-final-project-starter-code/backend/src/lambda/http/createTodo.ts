@@ -4,13 +4,14 @@ import { createLogger } from '../../utils/logger'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import {parseUserId} from '../../auth/utils'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
 import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
+import {AuthHelper} from '../../helpers/authHelper'
 
 const logger = createLogger('createTodo')
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
 const apiResponseHelper = new ApiResponseHelper();
+const authHelper = new AuthHelper() 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event', event)
@@ -18,35 +19,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
 
     const authHeader = event.headers['Authorization']
-    const token = getToken(authHeader)
-    const userId = parseUserId(token);
+    const userId = authHelper.getUserIdFromAathrizationHeader(authHeader)
 
     logger.info(`create group for user ${userId} with data ${newTodo}`)
 
     const todoItem = await dataAccessLayer.createTodoItems(newTodo,userId)
 
-    return apiResponseHelper.generateDataSuccessResponse(201,todoItem);
-
-    // return {
-    //   statusCode: 201,
-    //   headers: {
-    //     'Access-Control-Allow-Origin': '*'
-    //   },
-    //   body: JSON.stringify({
-    //       newPost: todoItem
-    //   })
-    // }
-   
-}
-
-function getToken(authHeader: string): string {
-  if (!authHeader) throw new Error('No authentication header')
-
-  if (!authHeader.toLowerCase().startsWith('bearer '))
-    throw new Error('Invalid authentication header')
-
-  const split = authHeader.split(' ')
-  const token = split[1]
-
-  return token
+    return apiResponseHelper.generateDataSuccessResponse(201,"newPost",todoItem);
 }

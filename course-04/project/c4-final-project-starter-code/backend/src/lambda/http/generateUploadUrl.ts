@@ -3,6 +3,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWS  from 'aws-sdk'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
+import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
 
 const s3 = new AWS.S3({
     signatureVersion: 'v4'
@@ -12,6 +13,7 @@ const bucketName = process.env.TODO_ATTACHMENT_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
+const apiResponseHelper = new ApiResponseHelper();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
@@ -27,27 +29,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   try{
 
     await dataAccessLayer.updateTodoItemWithAttachmentUrl(todoId,imageUrl);
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({
-          uploadUrl: uploadUrl
-      })
-    }
-
+    return apiResponseHelper.generateDataSuccessResponse(200,"uploadUrl",uploadUrl)
   }catch(Error){
-
-    return {
-      statusCode: 404,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: "Error in updating attachment url"
-    }
-
+    return apiResponseHelper.generateErrorResponse(404,"Error in updating attachment url")
   }
 
 

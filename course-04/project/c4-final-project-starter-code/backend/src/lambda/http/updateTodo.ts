@@ -3,9 +3,11 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
+import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
 
 
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
+const apiResponseHelper = new ApiResponseHelper();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
@@ -16,25 +18,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     await dataAccessLayer.updateTodoItem(updatedTodo,todoId);
 
-    return {
-      statusCode: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: "Updated Succesfully"
-    } 
+    return apiResponseHelper.generateEmptySuccessResponse(204);
 
   }catch(Error){
-
-    return {
-      statusCode: 404,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: "Error in updating"
-    } 
+    return apiResponseHelper.generateErrorResponse(404,"Error in updating")
   }
-
  
 }
 

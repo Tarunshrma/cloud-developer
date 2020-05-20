@@ -1,9 +1,10 @@
 import 'source-map-support/register'
 
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-
 import * as AWS  from 'aws-sdk'
+
+import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { DynamoDBDataAcccessLayer } from '../../dataAccess/DynamoDBAccess'
+import {ApiResponseHelper} from '../../helpers/apiResponseHelper'
 
 const s3 = new AWS.S3({
   signatureVersion: 'v4'
@@ -12,19 +13,16 @@ const s3 = new AWS.S3({
 const bucketName = process.env.TODO_ATTACHMENT_S3_BUCKET
 const dataAccessLayer = new DynamoDBDataAcccessLayer()
 
+const apiResponseHelper = new ApiResponseHelper();
+
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
 
     await dataAccessLayer.deleteTodoItem(todoId)
     deleteAttachmentImage(todoId);
 
-    return {
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: null
-      }
+    return apiResponseHelper.generateEmptySuccessResponse(200)
+
 }
 
 function deleteAttachmentImage(todoId: string){
