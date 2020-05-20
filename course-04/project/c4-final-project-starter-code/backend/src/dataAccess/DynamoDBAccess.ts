@@ -1,4 +1,5 @@
 import * as AWS  from 'aws-sdk'
+const AWSXRay = require('aws-xray-sdk')
 import { TodoItem } from '../models/TodoItem'
 import { createLogger } from '../utils/logger'
 import {CreateTodoRequest} from '../requests/CreateTodoRequest'
@@ -8,8 +9,8 @@ import * as uuid from 'uuid'
 export class DynamoDBDataAcccessLayer{
     
     constructor(
-
-        private readonly docClient: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(),
+        private readonly XAWS = AWSXRay.captureAWS(AWS),
+        private readonly docClient: AWS.DynamoDB.DocumentClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly todoTable = process.env.TODO_TABLE,
         private readonly todoIndex = process.env.INDEX_NAME, 
         private readonly logger = createLogger('DynamoDBDataAcccessLayer')
