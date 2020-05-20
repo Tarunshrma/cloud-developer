@@ -6,10 +6,11 @@ import {CreateTodoRequest} from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import * as uuid from 'uuid'
 
+const XAWS = AWSXRay.captureAWS(AWS)
+
 export class DynamoDBDataAcccessLayer{
     
-    constructor(
-        private readonly XAWS = AWSXRay.captureAWS(AWS),
+    constructor(        
         private readonly docClient: AWS.DynamoDB.DocumentClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly todoTable = process.env.TODO_TABLE,
         private readonly todoIndex = process.env.INDEX_NAME, 
